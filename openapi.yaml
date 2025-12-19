@@ -1,0 +1,36 @@
+openapi: 3.0.1
+info:
+  title: Doc2Notes
+  description: Convert documents or text into structured study notes.
+  version: "1.0.0"
+
+servers:
+  - url: https://REPLACE_AFTER_DEPLOY.vercel.app
+
+paths:
+  /summarize:
+    post:
+      summary: Generate notes, key points, and questions from text
+      operationId: summarizeText
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+              properties:
+                text:
+                  type: string
+                  description: Text extracted from a document
+      responses:
+        "200":
+          description: Structured study output
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
