@@ -1,8 +1,14 @@
 openapi: 3.0.1
 info:
   title: Doc2Notes
-  description: Convert documents or text into structured study notes.
+  description: >
+    Doc2Notes transforms user-provided text into structured study materials.
+    It generates organized notes with headings, extracts key takeaways, and
+    creates self-test questions to aid learning and retention.
   version: "1.0.0"
+  contact:
+    name: Doc2Notes Support
+    url: https://github.com/jasimvk/doc2notes/issues
 
 servers:
   - url: https://REPLACE_AFTER_DEPLOY.vercel.app
@@ -10,8 +16,14 @@ servers:
 paths:
   /summarize:
     post:
-      summary: Generate notes, key points, and questions from text
-      operationId: summarizeText
+      summary: Transform text into structured study notes
+      description: >
+        Accepts user-provided text content and generates comprehensive study materials
+        including: (1) structured notes with clear headings, (2) key takeaways for
+        quick review, and (3) five self-test questions for retention. This is a
+        read-only operation that does not store, share, or modify any external data.
+      operationId: generateStudyNotes
+      x-openai-isConsequential: false
       requestBody:
         required: true
         content:
@@ -23,14 +35,39 @@ paths:
               properties:
                 text:
                   type: string
-                  description: Text extracted from a document
+                  description: >
+                    The text content to transform into study notes. This should be
+                    educational or informational content that the user wants to
+                    learn from. Maximum 100,000 characters.
+                  maxLength: 100000
       responses:
         "200":
-          description: Structured study output
+          description: Successfully generated study materials
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   result:
+                    type: string
+                    description: >
+                      Formatted study materials containing structured notes with
+                      headings, key takeaways, and five self-test questions.
+        "400":
+          description: Invalid input - text is missing, empty, or exceeds maximum length
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        "500":
+          description: Server error during processing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
                     type: string
